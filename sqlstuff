@@ -1,0 +1,132 @@
+create table moviesandshows (
+  ID SERIAL PRIMARY KEY,
+  title VARCHAR(300),
+  year VARCHAR(20),
+  rated VARCHAR(20),
+  released VARCHAR(20),
+  runtime VARCHAR(20),
+  genre VARCHAR(300),
+  director VARCHAR(300),
+  actors TEXT,
+  plot TEXT,
+  posterOmdb TEXT,
+  ratingsArray TEXT, 
+  imdbRating DECIMAL,
+  type VARCHAR(20),
+  language VARCHAR(300),
+  country VARCHAR(300),
+  netflixId VARCHAR(300),
+  posterNetflix TEXT,
+  imdbId VARCHAR(30) UNIQUE,
+  available BOOLEAN  ,
+  countalert INTEGER
+);    
+
+ALTER TABLE moviesandshows ALTER COLUMN director type VARCHAR(300), ALTER COLUMN genre type VARCHAR(300), ALTER COLUMN language type VARCHAR(300), ALTER COLUMN netflixId type VARCHAR(300), ALTER COLUMN title type VARCHAR(300);
+
+GRANT ALL PRIVILEGES ON TABLE moviesandshows TO me;
+
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO me;
+
+DELETE FROM moviesandshows a
+WHERE a.ctid <> (SELECT min(b.ctid)
+FROM   moviesandshows b
+WHERE  a.title = b.title);
+
+SELECT FROM moviesandshows a
+WHERE a.ctid <> (SELECT min(b.ctid)
+FROM   moviesandshows b
+WHERE  a.title = b.title);
+
+\dt --- show all tables
+
+
+const query = `INSERT INTO moviesandshows 
+  (
+    title,
+    year,
+    rated,
+    released,
+    runtime,
+    genre,
+    director,
+    actors,
+    plot,
+    posterOmdb,
+    ratingsArray,
+    imdbRating,
+    type,
+    language,
+    country,
+    netflixId,
+    posterNetflix,
+    imdbId,
+    available
+  ) VALUES (
+    $1, 
+    $2, 
+    $3, 
+    $4, 
+    $5, 
+    $6, 
+    $7, 
+    $8, 
+    $9, 
+    $10, 
+    $11, 
+    $12, 
+    $13, 
+    $14, 
+    $15, 
+    $16, 
+    $17, 
+    $18, 
+    $19
+  )
+  ON CONFLICT (imdbId) DO UPDATE 
+  SET title = $1,
+  year = $2,
+  rated = $3,
+  released = $4,
+  runtime = $5,
+  genre = $6,
+  director = $7,
+  actors = $8,
+  plot = $9,
+  posterOmdb =  10,
+  ratingsArray =  11,
+  imdbRating =  12,
+  type =  13,
+  language =  14,
+  country =  15,
+  netflixId =  16,
+  posterNetflix =  17
+  RETURNING * 
+  `
+  return await db.pool.query(query, [
+    (obj.title ? obj.title : ''),
+    (obj.year ? obj.year : ''),
+    (obj.rated ? obj.rated : ''),
+    (obj.released ? obj.released : ''),
+    (obj.runtime ? obj.runtime : ''),
+    (obj.genre ? obj.genre : ''),
+    (obj.director ? obj.director : ''),
+    (obj.actors ? obj.actors : ''),
+    (obj.plot ? obj.plot : ''),
+    (obj.posterOmdb ? obj.posterOmdb : ''),
+    (obj.ratings ? obj.ratings : ''),
+    (obj.imdbrating ? obj.imdbrating : 0),
+    (obj.type ? obj.type : ''),
+    (obj.language ? obj.language : ''),
+    (obj.country ? obj.country : ''),
+    (obj.netflixId ? obj.netflixId : ''),
+    (obj.posterNetflix ? obj.posterNetflix : ''),
+    (obj.imdbId ? obj.imdbId : ''),
+    obj.available
+  ])
+
+ALTER TABLE moviesandshows ALTER COLUMN director type VARCHAR(300), ALTER COLUMN genre type VARCHAR(300), ALTER COLUMN language type VARCHAR(300), ALTER COLUMN netflixId type VARCHAR(300), ALTER COLUMN title type VARCHAR(300);
+
+SELECT title
+    FROM moviesandshows
+    LIMIT 20 OFFSET 0;
