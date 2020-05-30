@@ -9,6 +9,11 @@ const fetchInfo = require('./utils/fetchInfo')
 
 const port = 3235
 
+const getInfo = () => {
+  fetchInfo.fetchTvshowsNetflix()
+  fetchInfo.fetchMoviesNetflix()
+}
+
 app.use(cors())
 app.use(bodyParser.json())
 app.use(
@@ -17,11 +22,11 @@ app.use(
   })
 )
 
-app.get('/getShows', queries.getShows)
+app.get('/getShows/:type', queries.getShows)
 app.get('/setAlert/:id', queries.setAlert)
 
 app.listen(port, () => {
-  schedule.scheduleJob('0 0 * * *',fetchInfo.fetchMoviesNetflix())
+  schedule.scheduleJob('0 0 * * *',getInfo())
   console.log(`App running on port ${port}.`)
 })
 

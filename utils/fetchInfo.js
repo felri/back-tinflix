@@ -2,7 +2,8 @@ const fetch = require("node-fetch");
 const jsdom = require("jsdom");
 const queries = require("../db/queries")
 
-const PAGES = 2
+const PAGES_MOVIES = 149
+const PAGES_TVSHOWS = 49
 
 function returnHtmlDoc(resp) {
   const dom = new jsdom.JSDOM(resp);
@@ -21,10 +22,10 @@ async function getTvShowOmdbId(id) {
 }
 
 async function fetchMoviesNetflix() {
-  console.log('GETTING NEW SHOWS')
+  console.log('GETTING NEW MOVIES')
   let movies = []
-  for (let i = 0; i < PAGES; i++) {
-    console.log(`---------- PAGINA ${i + 1} ---------------------`)
+  for (let i = 0; i < PAGES_MOVIES; i++) {
+    console.log(`---------- PAGINA MOVIES${i + 1} ---------------------`)
     const text = await fetch(`${process.env.BASE_URL_NETFLIX_MOVIES}${i + 1}`).then(res => res.text())
     const doc = returnHtmlDoc(text)
     const results = doc.getElementsByClassName('card card-plain mx-auto')
@@ -34,11 +35,15 @@ async function fetchMoviesNetflix() {
 }
 
 async function fetchTvshowsNetflix() {
-  for (let i = 0; i < PAGES; i++) {
+  console.log('GETTING NEW SHOWS')
+  let tvshows = []
+  for (let i = 0; i < PAGES_TVSHOWS; i++) {
+    console.log(`---------- PAGINA TV SHOWS${i + 1} ---------------------`)
     const text = await fetch(`${process.env.BASE_URL_NETFLIX_TVSHOWS}${i + 1}`).then(res => res.text())
     const doc = returnHtmlDoc(text)
     const results = doc.getElementsByClassName('card card-plain mx-auto')
-    await getItemsFromPage(results)
+    const itemsPage = await getItemsFromPage(results)
+    tvshows.concat(itemsPage)
   }
 }
 

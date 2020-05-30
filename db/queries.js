@@ -87,13 +87,23 @@ const createMovieTvshow = async ({ obj }) => {
     obj.available
   ])
 }
-const getShows = (request, response) => {
-  db.pool.query(`SELECT * FROM moviesandshows WHERE available = 'true' ORDER BY RANDOM() LIMIT 10;`, (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(200).json(results.rows)
-  })
+const getShows = async (request, response) => {
+  let results = {}
+  if(request.params.type === 'all') results = await getAll()
+  else if(request.params.type === 'movie') results = await getMovies()
+  // else if(request.params.type === 'all') const results = await getMovies()
+  if(results.rows) response.status(200).json(results.rows)
+  else response.status(200).json({})
+}
+
+const getMovies = async () => {
+  const results = await db.pool.query(`SELECT * FROM moviesandshows WHERE available = 'true' AND type = 'movie' ORDER BY RANDOM() LIMIT 10;`)
+  return results
+}
+
+const getAll = async () => {
+  const results = await db.pool.query(`SELECT * FROM moviesandshows WHERE available = 'true' ORDER BY RANDOM() LIMIT 10;`)
+  return results
 }
 
 const setAvailableFalse = async ({id}) => {
