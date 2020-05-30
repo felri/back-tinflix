@@ -21,6 +21,7 @@ async function getTvShowOmdbId(id) {
 }
 
 async function fetchMoviesNetflix() {
+  console.log('GETTING NEW SHOWS')
   let movies = []
   for (let i = 0; i < PAGES; i++) {
     console.log(`---------- PAGINA ${i + 1} ---------------------`)
@@ -30,7 +31,6 @@ async function fetchMoviesNetflix() {
     const itemsPage = await getItemsFromPage(results)
     movies.concat(itemsPage)
   }
-  console.log(movies)
 }
 
 async function fetchTvshowsNetflix() {

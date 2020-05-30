@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser')
 const app = express()
 const queries = require('./db/queries')
+const schedule = require('node-schedule')
 const fetchInfo = require('./utils/fetchInfo')
 
 const port = 3235
@@ -18,13 +19,9 @@ app.use(
 
 app.get('/getShows', queries.getShows)
 app.get('/setAlert/:id', queries.setAlert)
-// app.get('/tvshows', dbTvshows.getTvshows)
-// app.delete('/tvshows/:id', dbTvshows.deleteTvshow)
-// app.delete('/tvshows/all', dbTvshows.cleanDb)
-// app.get('/populateDb', dbTvshows.populateDb)
 
 app.listen(port, () => {
-  // fetchInfo.fetchMoviesNetflix()
+  schedule.scheduleJob('0 0 * * *',fetchInfo.fetchMoviesNetflix())
   console.log(`App running on port ${port}.`)
 })
 
