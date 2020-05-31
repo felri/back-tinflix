@@ -91,9 +91,14 @@ const getShows = async (request, response) => {
   let results = {}
   if(request.params.type === 'all') results = await getAll()
   else if(request.params.type === 'movie') results = await getMovies()
-  // else if(request.params.type === 'all') const results = await getMovies()
+  else if(request.params.type === 'series') const results = await getTvshows()
   if(results.rows) response.status(200).json(results.rows)
   else response.status(200).json({})
+}
+
+const getTvshows = async () => {
+  const results = await db.pool.query(`SELECT * FROM moviesandshows WHERE available = 'true' AND type = 'series' ORDER BY RANDOM() LIMIT 10;`)
+  return results
 }
 
 const getMovies = async () => {

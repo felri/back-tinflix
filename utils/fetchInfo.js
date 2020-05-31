@@ -2,8 +2,8 @@ const fetch = require("node-fetch");
 const jsdom = require("jsdom");
 const queries = require("../db/queries")
 
-const PAGES_MOVIES = 149
-const PAGES_TVSHOWS = 49
+const PAGES_MOVIES = 2
+const PAGES_TVSHOWS = 2
 
 function returnHtmlDoc(resp) {
   const dom = new jsdom.JSDOM(resp);
