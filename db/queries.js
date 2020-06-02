@@ -112,7 +112,6 @@ const getShows = async (request, response) => {
 const getTvshows = async ({params}) => {
   const startQuery = `SELECT * FROM moviesandshows WHERE available = 'true' AND type = 'series'`
   const endQuery = ` ORDER BY RANDOM() LIMIT 10;`
-  console.log(startQuery + params + endQuery)
   const results = await db.pool.query(startQuery + params + endQuery)
   return results
 }
@@ -120,7 +119,6 @@ const getTvshows = async ({params}) => {
 const getMovies = async ({params}) => {
   const startQuery = `SELECT * FROM moviesandshows WHERE available = 'true' AND type = 'movie'`
   const endQuery = ` ORDER BY RANDOM() LIMIT 10;`
-  console.log(startQuery + params + endQuery)
   const results = await db.pool.query(startQuery + params + endQuery)
   console.log(results)
   return results
@@ -129,7 +127,6 @@ const getMovies = async ({params}) => {
 const getAll = async ({params}) => {
   const startQuery = `SELECT * FROM moviesandshows WHERE available = 'true'`
   const endQuery = ` ORDER BY RANDOM() LIMIT 10;`
-  console.log(startQuery + params + endQuery)
   const results = await db.pool.query(startQuery + params + endQuery)
   return results
 }
