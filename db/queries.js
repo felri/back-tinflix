@@ -87,27 +87,50 @@ const createMovieTvshow = async ({ obj }) => {
     obj.available
   ])
 }
+
+const handleQuery = ({query}) => {
+  let params = ''
+  if(query.genre) params = params.concat(` AND genre LIKE '%${query.genre}%'`)
+  if(query.language) params = params.concat(` AND language LIKE '%${query.language}%'`)
+  if(query.from) params = params.concat(` AND CAST(LEFT (year,4) as INTEGER) >= ${query.from} AND year<>''`)
+  if(query.to) params = params.concat(` AND CAST(LEFT (year,4) as INTEGER) <= ${query.to} AND year<>''`)
+  return params
+}
+
 const getShows = async (request, response) => {
   let results = {}
-  if(request.params.type === 'all') results = await getAll()
-  else if(request.params.type === 'movie') results = await getMovies()
-  else if(request.params.type === 'series') const results = await getTvshows()
+
+  const params = await handleQuery({query: request.query})
+
+  if(request.params.type === 'all') results = await getAll({params})
+  else if(request.params.type === 'movie') results = await getMovies({params})
+  else if(request.params.type === 'series') results = await getTvshows({params})
   if(results.rows) response.status(200).json(results.rows)
-  else response.status(200).json({})
+  else response.status(400).json({message: 'nothing found'})
 }
 
-const getTvshows = async () => {
-  const results = await db.pool.query(`SELECT * FROM moviesandshows WHERE available = 'true' AND type = 'series' ORDER BY RANDOM() LIMIT 10;`)
+const getTvshows = async ({params}) => {
+  const startQuery = `SELECT * FROM moviesandshows WHERE available = 'true' AND type = 'series'`
+  const endQuery = ` ORDER BY RANDOM() LIMIT 10;`
+  console.log(startQuery + params + endQuery)
+  const results = await db.pool.query(startQuery + params + endQuery)
   return results
 }
 
-const getMovies = async () => {
-  const results = await db.pool.query(`SELECT * FROM moviesandshows WHERE available = 'true' AND type = 'movie' ORDER BY RANDOM() LIMIT 10;`)
+const getMovies = async ({params}) => {
+  const startQuery = `SELECT * FROM moviesandshows WHERE available = 'true' AND type = 'movie'`
+  const endQuery = ` ORDER BY RANDOM() LIMIT 10;`
+  console.log(startQuery + params + endQuery)
+  const results = await db.pool.query(startQuery + params + endQuery)
+  console.log(results)
   return results
 }
 
-const getAll = async () => {
-  const results = await db.pool.query(`SELECT * FROM moviesandshows WHERE available = 'true' ORDER BY RANDOM() LIMIT 10;`)
+const getAll = async ({params}) => {
+  const startQuery = `SELECT * FROM moviesandshows WHERE available = 'true'`
+  const endQuery = ` ORDER BY RANDOM() LIMIT 10;`
+  console.log(startQuery + params + endQuery)
+  const results = await db.pool.query(startQuery + params + endQuery)
   return results
 }
 

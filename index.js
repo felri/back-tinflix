@@ -26,7 +26,7 @@ app.get('/getShows/:type', queries.getShows)
 app.get('/setAlert/:id', queries.setAlert)
 
 app.listen(port, () => {
-  schedule.scheduleJob('0 0 * * *',getInfo())
+  // schedule.scheduleJob('0 0 * * *',getInfo())
   console.log(`App running on port ${port}.`)
 })
 
