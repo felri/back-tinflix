@@ -96,7 +96,6 @@ async function getItemsFromPage(items) {
 
     if (netflixId && poster && imdbId) {
       const trailer = await getYoutubeTrailer({title})
-      console.log(trailer)
       let obj = {
         netflixId: netflixId[1],
         posterNetflix: poster[1],
@@ -116,6 +115,7 @@ async function getItemsFromPage(items) {
         }
         const responseDb = await queries.createMovieTvshow({ obj })
         console.log(responseDb.rows[0] && responseDb.rows[0].title)
+        console.log(responseDb.rows[0] && responseDb.rows[0].trailer)
       }
     }
   }

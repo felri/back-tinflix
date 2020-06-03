@@ -124,7 +124,6 @@ const getMovies = async ({params}) => {
   const startQuery = `SELECT * FROM moviesandshows WHERE available = 'true' AND type = 'movie'`
   const endQuery = ` ORDER BY RANDOM() LIMIT 10;`
   const results = await db.pool.query(startQuery + params + endQuery)
-  console.log(results)
   return results
 }
 
