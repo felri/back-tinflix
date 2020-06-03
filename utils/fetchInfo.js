@@ -1,6 +1,7 @@
 const fetch = require("node-fetch");
 const jsdom = require("jsdom");
 const queries = require("../db/queries")
+const youtube = require('scrape-youtube').default;
 
 const PAGES_MOVIES = 100
 const PAGES_TVSHOWS = 50
@@ -68,14 +69,12 @@ function formatOmdbInfo(omdbInfo) {
 }
 
 async function getYoutubeTrailer({title}) {
-  const url = process.env.BASE_URL_YOUTUBE + title + process.env.API_KEY_YOUTUBE
   try {
-    const response = await fetch(url)
-    const data = await response.json()
-    if (data.items && data.items.length > 0) {
-      for(let i = 0; i < data.items.length; i++) {
-        if(data.items[i].id.videoId && data.items[i].snippet.title.toUpperCase().includes('TRAILER')) {
-          return data.items[i].id.videoId
+    const data = await youtube.search(title + ' trailer', {type: 'video', limit: 7})
+    if (data && data.length > 0) {
+      for(let i = 0; i < data.length; i++) {
+        if(data[i].title.toUpperCase().includes('TRAILER')) {
+          return data[i].id
         }
       }
     } else return undefined
@@ -97,6 +96,7 @@ async function getItemsFromPage(items) {
 
     if (netflixId && poster && imdbId) {
       const trailer = await getYoutubeTrailer({title})
+      console.log(trailer)
       let obj = {
         netflixId: netflixId[1],
         posterNetflix: poster[1],
