@@ -68,7 +68,12 @@ function formatOmdbInfo(omdbInfo) {
   return info
 }
 
+function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function getYoutubeTrailer({title}) {
+  await timeout(1000)
   try {
     const data = await youtube.search(title + ' trailer', {type: 'video', limit: 7})
     if (data && data.length > 0) {
