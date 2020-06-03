@@ -2,8 +2,8 @@ const fetch = require("node-fetch");
 const jsdom = require("jsdom");
 const queries = require("../db/queries")
 
-const PAGES_MOVIES = 2
-const PAGES_TVSHOWS = 2
+const PAGES_MOVIES = 100
+const PAGES_TVSHOWS = 50
 
 function returnHtmlDoc(resp) {
   const dom = new jsdom.JSDOM(resp);
@@ -67,6 +67,23 @@ function formatOmdbInfo(omdbInfo) {
   return info
 }
 
+async function getYoutubeTrailer({title}) {
+  const url = process.env.BASE_URL_YOUTUBE + title + process.env.API_KEY_YOUTUBE
+  try {
+    const response = await fetch(url)
+    const data = await response.json()
+    if (data.items && data.items.length > 0) {
+      for(let i = 0; i < data.items.length; i++) {
+        if(data.items[i].id.videoId && data.items[i].snippet.title.toUpperCase().includes('TRAILER')) {
+          return data.items[i].id.videoId
+        }
+      }
+    } else return undefined
+  } catch (e) {
+    return undefined
+  }
+}
+
 async function getItemsFromPage(items) {
   for (let i = 0; i < items.length; i++) {
     const REGEX_IMDB_ID = /title\/(.*)\/\?ref/gm;
@@ -79,12 +96,14 @@ async function getItemsFromPage(items) {
     const title = items[i].querySelector('.card-title').textContent
 
     if (netflixId && poster && imdbId) {
+      const trailer = await getYoutubeTrailer({title})
       let obj = {
         netflixId: netflixId[1],
         posterNetflix: poster[1],
         title: title,
         imdbId: imdbId && imdbId[1],
-        available: true
+        available: true,
+        trailer: trailer
       }
 
       if (imdbId) {

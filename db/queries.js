@@ -22,6 +22,7 @@ const createMovieTvshow = async ({ obj }) => {
     posterNetflix,
     imdbId,
     available,
+    trailer,
     countalert
   ) VALUES (
     $1, 
@@ -43,6 +44,7 @@ const createMovieTvshow = async ({ obj }) => {
     $17, 
     $18, 
     $19,
+    $20,
     0
   )
   ON CONFLICT (imdbId) DO UPDATE 
@@ -62,7 +64,8 @@ const createMovieTvshow = async ({ obj }) => {
   language =  $14,
   country =  $15,
   netflixId =  $16,
-  posterNetflix =  $17
+  posterNetflix =  $17,
+  trailer = $20 
   RETURNING * 
   `
   return await db.pool.query(query, [
@@ -84,7 +87,8 @@ const createMovieTvshow = async ({ obj }) => {
     (obj.netflixId ? obj.netflixId : ''),
     (obj.posterNetflix ? obj.posterNetflix : ''),
     (obj.imdbId ? obj.imdbId : ''),
-    obj.available
+    obj.available,
+    (obj.trailer ? obj.trailer : '')
   ])
 }
 

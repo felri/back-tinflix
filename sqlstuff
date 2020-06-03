@@ -130,3 +130,5 @@ ALTER TABLE moviesandshows ALTER COLUMN director type VARCHAR(300), ALTER COLUMN
 SELECT title
     FROM moviesandshows
     LIMIT 20 OFFSET 0;
+
+ALTER TABLE moviesandshows ADD COLUMN trailer VARCHAR(300);
